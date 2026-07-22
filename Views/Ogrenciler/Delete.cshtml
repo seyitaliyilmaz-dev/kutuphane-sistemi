@@ -1,0 +1,18 @@
+@model kutuphane_sistemi.Models.Ogrenci
+
+<h2>Öğrenciyi Sil</h2>
+
+<p>Bu öğrenciyi silmek istediğinize emin misiniz?</p>
+
+<dl>
+    <dt>Ad Soyad</dt>
+    <dd>@Model.AdSoyad</dd>
+    <dt>Öğrenci No</dt>
+    <dd>@Model.OgrenciNo</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="OgrenciID" />
+    <button type="submit" class="btn btn-danger">Evet, Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

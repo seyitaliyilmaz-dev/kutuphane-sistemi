@@ -1,0 +1,34 @@
+@model kutuphane_sistemi.Models.OdunAlma
+
+<h2>Yeni Ödünç Alma</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label>Kitap</label>
+        <select asp-for="KitapID" class="form-control">
+            <option value="0">-- Seçiniz --</option>
+            @foreach (var kitap in (List<kutuphane_sistemi.Models.Kitap>)ViewBag.Kitaplar)
+            {
+                <option value="@kitap.KitapID">@kitap.Baslik</option>
+            }
+        </select>
+        <span asp-validation-for="KitapID" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>Öğrenci</label>
+        <select asp-for="OgrenciID" class="form-control">
+            <option value="0">-- Seçiniz --</option>
+            @foreach (var ogrenci in (List<kutuphane_sistemi.Models.Ogrenci>)ViewBag.Ogrenciler)
+            {
+                <option value="@ogrenci.OgrenciID">@ogrenci.AdSoyad</option>
+            }
+        </select>
+        <span asp-validation-for="OgrenciID" class="text-danger"></span>
+    </div>
+
+    <p><em>Not: Son teslim tarihi, alış tarihinden 14 gün sonrası olarak otomatik ayarlanacaktır.</em></p>
+
+    <button type="submit" class="btn btn-primary">Ödünç Ver</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

@@ -1,0 +1,31 @@
+@model kutuphane_sistemi.Models.Kitap
+
+<h2>Kitap Düzenle</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="KitapID" />
+
+    <div class="mb-3">
+        <label>Başlık</label>
+        <input asp-for="Baslik" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Yazar</label>
+        <select asp-for="YazarID" class="form-control">
+            @foreach (var yazar in (List<kutuphane_sistemi.Models.Yazar>)ViewBag.Yazarlar)
+            {
+                <option value="@yazar.YazarID">@yazar.AdSoyad</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>
+            <input type="checkbox" asp-for="OduncDurumu" /> Ödünçte mi?
+        </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

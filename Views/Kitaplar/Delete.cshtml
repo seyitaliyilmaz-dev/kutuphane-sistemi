@@ -1,0 +1,18 @@
+@model kutuphane_sistemi.Models.Kitap
+
+<h2>Kitabı Sil</h2>
+
+<p>Bu kitabı silmek istediğinize emin misiniz?</p>
+
+<dl>
+    <dt>Başlık</dt>
+    <dd>@Model.Baslik</dd>
+    <dt>Yazar</dt>
+    <dd>@(Model.Yazar?.AdSoyad ?? "Bilinmiyor")</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="KitapID" />
+    <button type="submit" class="btn btn-danger">Evet, Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

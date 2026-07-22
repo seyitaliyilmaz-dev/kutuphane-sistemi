@@ -1,0 +1,26 @@
+@model kutuphane_sistemi.Models.Kitap
+
+<h2>Yeni Kitap Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label>Başlık</label>
+        <input asp-for="Baslik" class="form-control" />
+        <span asp-validation-for="Baslik" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>Yazar</label>
+        <select asp-for="YazarID" class="form-control">
+            <option value="0">-- Seçiniz --</option>
+            @foreach (var yazar in (List<kutuphane_sistemi.Models.Yazar>)ViewBag.Yazarlar)
+            {
+                <option value="@yazar.YazarID">@yazar.AdSoyad</option>
+            }
+        </select>
+        <span asp-validation-for="YazarID" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

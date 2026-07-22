@@ -1,0 +1,20 @@
+@model kutuphane_sistemi.Models.Ogrenci
+
+<h2>Yeni Öğrenci Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label>Ad Soyad</label>
+        <input asp-for="AdSoyad" class="form-control" />
+        <span asp-validation-for="AdSoyad" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>Öğrenci No</label>
+        <input asp-for="OgrenciNo" class="form-control" />
+        <span asp-validation-for="OgrenciNo" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<h1>📚 Kütüphane Yönetim Paneli</h1>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Toplam Kitap</h5>
+                <p class="card-text fs-2">@ViewBag.ToplamKitap</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Ödünçte Olan</h5>
+                <p class="card-text fs-2">@ViewBag.OduncteKitap</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Toplam Öğrenci</h5>
+                <p class="card-text fs-2">@ViewBag.ToplamOgrenci</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Gecikmiş Kayıt</h5>
+                <p class="card-text fs-2">@ViewBag.GecikmisKayit</p>
+            </div>
+        </div>
+    </div>
+</div>
