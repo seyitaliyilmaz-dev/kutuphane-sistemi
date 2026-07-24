@@ -14,9 +14,20 @@ public class KitaplarController : Controller
     }
 
     // GET: /Kitaplar
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? arama)
     {
-        var kitaplar = await _context.Kitaplar.Include(k => k.Yazar).ToListAsync();
+        var sorgu = _context.Kitaplar.Include(k => k.Yazar).AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(arama))
+        {
+            sorgu = sorgu.Where(k =>
+                k.Baslik.Contains(arama) ||
+                (k.Yazar != null && k.Yazar.AdSoyad.Contains(arama)));
+        }
+
+        ViewBag.AramaMetni = arama;
+
+        var kitaplar = await sorgu.ToListAsync();
         return View(kitaplar);
     }
 
