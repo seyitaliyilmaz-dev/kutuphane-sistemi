@@ -5,6 +5,7 @@ ASP.NET Core MVC ve Entity Framework Core (Code First) kullanılarak geliştiril
 ## Özellikler
 
 - **Kitap Yönetimi:** Kitap ekleme, düzenleme, silme; yazar ilişkilendirme
+- **Yazar Yönetimi:** Yazar ekleme, düzenleme, silme; kitapları olan bir yazarın silinmesini engelleyen veri bütünlüğü kontrolü
 - **Öğrenci Yönetimi:** Öğrenci kayıtlarının CRUD işlemleri
 - **Ödünç Alma/Verme Sistemi:** Kitap ödünç alma, otomatik 14 günlük son teslim tarihi hesaplama, iade işlemi
 - **Geç Teslim Takibi:** Süresi geçmiş ve iade edilmemiş kayıtların otomatik tespiti ve vurgulanması
@@ -23,6 +24,15 @@ ASP.NET Core MVC ve Entity Framework Core (Code First) kullanılarak geliştiril
 
 - **Yazar** ↔ **Kitap**: Bir yazarın birden fazla kitabı olabilir
 - **Kitap** ↔ **Öğrenci** (OdunAlma tablosu üzerinden): Bir öğrenci birden fazla kitap ödünç alabilir, bir kitap zaman içinde birden fazla öğrenciye ödünç verilebilir
+
+## Modüller
+
+| Modül | İşlemler |
+|---|---|
+| Kitaplar | Ekle, Listele, Düzenle, Sil |
+| Yazarlar | Ekle, Listele, Düzenle, Sil (kitapları varsa silme engellenir) |
+| Öğrenciler | Ekle, Listele, Düzenle, Sil |
+| Ödünç Almalar | Ödünç ver, İade al, Gecikme takibi |
 
 ## Çalıştırma
 
