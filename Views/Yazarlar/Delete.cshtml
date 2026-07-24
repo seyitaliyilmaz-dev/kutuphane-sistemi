@@ -1,0 +1,23 @@
+@model kutuphane_sistemi.Models.Yazar
+
+<h2>Yazarı Sil</h2>
+
+<p>Bu yazarı silmek istediğinize emin misiniz?</p>
+
+<dl>
+    <dt>Ad Soyad</dt>
+    <dd>@Model.AdSoyad</dd>
+    <dt>Kitap Sayısı</dt>
+    <dd>@(Model.Kitaplar?.Count ?? 0)</dd>
+</dl>
+
+@if (Model.Kitaplar != null && Model.Kitaplar.Any())
+{
+    <div class="alert alert-warning">Bu yazarın kitapları var, silme işlemi engellenecektir.</div>
+}
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="YazarID" />
+    <button type="submit" class="btn btn-danger">Evet, Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
