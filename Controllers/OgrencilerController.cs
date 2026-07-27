@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using kutuphane_sistemi.Models;
@@ -13,20 +14,19 @@ public class OgrencilerController : Controller
         _context = context;
     }
 
-    // GET: /Ogrenciler
     public async Task<IActionResult> Index()
     {
         var ogrenciler = await _context.Ogrenciler.ToListAsync();
         return View(ogrenciler);
     }
 
-    // GET: /Ogrenciler/Create
+    [Authorize]
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST: /Ogrenciler/Create
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(Ogrenci ogrenci)
     {
@@ -40,7 +40,7 @@ public class OgrencilerController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: /Ogrenciler/Edit/5
+    [Authorize]
     public async Task<IActionResult> Edit(int id)
     {
         var ogrenci = await _context.Ogrenciler.FindAsync(id);
@@ -51,7 +51,7 @@ public class OgrencilerController : Controller
         return View(ogrenci);
     }
 
-    // POST: /Ogrenciler/Edit/5
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Edit(int id, Ogrenci ogrenci)
     {
@@ -70,7 +70,7 @@ public class OgrencilerController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: /Ogrenciler/Delete/5
+    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
         var ogrenci = await _context.Ogrenciler.FirstOrDefaultAsync(o => o.OgrenciID == id);
@@ -81,7 +81,7 @@ public class OgrencilerController : Controller
         return View(ogrenci);
     }
 
-    // POST: /Ogrenciler/Delete/5
+    [Authorize]
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

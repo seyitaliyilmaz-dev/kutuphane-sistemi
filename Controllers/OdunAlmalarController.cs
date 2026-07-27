@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using kutuphane_sistemi.Models;
@@ -13,7 +14,6 @@ public class OdunAlmalarController : Controller
         _context = context;
     }
 
-    // GET: /OdunAlmalar
     public async Task<IActionResult> Index()
     {
         var odunAlmalar = await _context.OdunAlmalar
@@ -24,16 +24,15 @@ public class OdunAlmalarController : Controller
         return View(odunAlmalar);
     }
 
-    // GET: /OdunAlmalar/Create
+    [Authorize]
     public IActionResult Create()
     {
-        // Sadece rafta olan (ödünç verilmemiş) kitapları listele
         ViewBag.Kitaplar = _context.Kitaplar.Where(k => !k.OduncDurumu).ToList();
         ViewBag.Ogrenciler = _context.Ogrenciler.ToList();
         return View();
     }
 
-    // POST: /OdunAlmalar/Create
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(OdunAlma odunAlma)
     {
@@ -45,12 +44,11 @@ public class OdunAlmalarController : Controller
         }
 
         odunAlma.AlisTarihi = DateTime.Now;
-        odunAlma.SonTeslimTarihi = DateTime.Now.AddDays(14); // 14 gün ödünç süresi
+        odunAlma.SonTeslimTarihi = DateTime.Now.AddDays(14);
         odunAlma.IadeTarihi = null;
 
         _context.OdunAlmalar.Add(odunAlma);
 
-        // Kitabın durumunu "ödünçte" yap
         var kitap = await _context.Kitaplar.FindAsync(odunAlma.KitapID);
         if (kitap != null)
         {
@@ -61,7 +59,7 @@ public class OdunAlmalarController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // POST: /OdunAlmalar/IadeEt/5
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> IadeEt(int id)
     {
@@ -73,7 +71,6 @@ public class OdunAlmalarController : Controller
 
         odunAlma.IadeTarihi = DateTime.Now;
 
-        // Kitabın durumunu "rafta" yap
         var kitap = await _context.Kitaplar.FindAsync(odunAlma.KitapID);
         if (kitap != null)
         {

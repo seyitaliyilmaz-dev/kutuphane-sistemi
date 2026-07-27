@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using kutuphane_sistemi.Models;
@@ -13,7 +14,7 @@ public class KitaplarController : Controller
         _context = context;
     }
 
-    // GET: /Kitaplar
+    // GET: /Kitaplar (herkese açık)
     public async Task<IActionResult> Index(string? arama)
     {
         var sorgu = _context.Kitaplar.Include(k => k.Yazar).AsQueryable();
@@ -31,14 +32,16 @@ public class KitaplarController : Controller
         return View(kitaplar);
     }
 
-    // GET: /Kitaplar/Create
+    // GET: /Kitaplar/Create (sadece giriş yapan)
+    [Authorize]
     public IActionResult Create()
     {
         ViewBag.Yazarlar = _context.Yazarlar.ToList();
         return View();
     }
 
-    // POST: /Kitaplar/Create
+    // POST: /Kitaplar/Create (sadece giriş yapan)
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(Kitap kitap)
     {
@@ -53,7 +56,8 @@ public class KitaplarController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: /Kitaplar/Edit/5
+    // GET: /Kitaplar/Edit/5 (sadece giriş yapan)
+    [Authorize]
     public async Task<IActionResult> Edit(int id)
     {
         var kitap = await _context.Kitaplar.FindAsync(id);
@@ -65,7 +69,8 @@ public class KitaplarController : Controller
         return View(kitap);
     }
 
-    // POST: /Kitaplar/Edit/5
+    // POST: /Kitaplar/Edit/5 (sadece giriş yapan)
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Edit(int id, Kitap kitap)
     {
@@ -85,7 +90,8 @@ public class KitaplarController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: /Kitaplar/Delete/5
+    // GET: /Kitaplar/Delete/5 (sadece giriş yapan)
+    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
         var kitap = await _context.Kitaplar.Include(k => k.Yazar)
@@ -97,7 +103,8 @@ public class KitaplarController : Controller
         return View(kitap);
     }
 
-    // POST: /Kitaplar/Delete/5
+    // POST: /Kitaplar/Delete/5 (sadece giriş yapan)
+    [Authorize]
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

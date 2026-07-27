@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using kutuphane_sistemi.Models;
@@ -13,20 +14,19 @@ public class YazarlarController : Controller
         _context = context;
     }
 
-    // GET: /Yazarlar
     public async Task<IActionResult> Index()
     {
         var yazarlar = await _context.Yazarlar.Include(y => y.Kitaplar).ToListAsync();
         return View(yazarlar);
     }
 
-    // GET: /Yazarlar/Create
+    [Authorize]
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST: /Yazarlar/Create
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(Yazar yazar)
     {
@@ -40,7 +40,7 @@ public class YazarlarController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: /Yazarlar/Edit/5
+    [Authorize]
     public async Task<IActionResult> Edit(int id)
     {
         var yazar = await _context.Yazarlar.FindAsync(id);
@@ -51,7 +51,7 @@ public class YazarlarController : Controller
         return View(yazar);
     }
 
-    // POST: /Yazarlar/Edit/5
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Edit(int id, Yazar yazar)
     {
@@ -70,7 +70,7 @@ public class YazarlarController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: /Yazarlar/Delete/5
+    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
         var yazar = await _context.Yazarlar
@@ -83,7 +83,7 @@ public class YazarlarController : Controller
         return View(yazar);
     }
 
-    // POST: /Yazarlar/Delete/5
+    [Authorize]
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
