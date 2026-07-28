@@ -13,4 +13,5 @@ public class KutuphaneDbContext : DbContext
     public DbSet<OdunAlma> OdunAlmalar { get; set; }
     public DbSet<Kullanici> Kullanicilar { get; set; }
     public DbSet<OduncTalebi> OduncTalepleri { get; set; }
+    public DbSet<Bildirim> Bildirimler { get; set; }
 }

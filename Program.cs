@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<KutuphaneDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("KutuphaneDB")));
@@ -38,5 +39,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+app.MapHub<BildirimHub>("/bildirimHub");
 
 app.Run();

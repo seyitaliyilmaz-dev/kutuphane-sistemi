@@ -49,7 +49,18 @@
                             </li>
                         }
                     </ul>
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav align-items-center">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-dark position-relative" asp-controller="Bildirimler" asp-action="Index" id="bildirimIkonu">
+                                    🔔
+                                    <span id="bildirimRozeti" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none;">
+                                        0
+                                    </span>
+                                </a>
+                            </li>
+                        }
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item d-flex align-items-center me-2">
@@ -72,6 +83,10 @@
             </div>
         </nav>
     </header>
+
+    <!-- Anlık (geçici) bildirim kutusu -->
+    <div id="bildirimKutusu" style="position: fixed; top: 70px; right: 20px; z-index: 9999; max-width: 350px;"></div>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -86,6 +101,52 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+        <script>
+            // Sayfa açıldığında okunmamış bildirim sayısını çek
+            function rozetiGuncelle() {
+                fetch('/Bildirimler/OkunmamisSayisi')
+                    .then(r => r.json())
+                    .then(data => {
+                        const rozet = document.getElementById('bildirimRozeti');
+                        if (data.sayi > 0) {
+                            rozet.style.display = 'inline-block';
+                            rozet.textContent = data.sayi;
+                        } else {
+                            rozet.style.display = 'none';
+                        }
+                    });
+            }
+            rozetiGuncelle();
+
+            // Anlık bildirim bağlantısı
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/bildirimHub")
+                .build();
+
+            connection.on("YeniTalep", function (mesaj) {
+                // Geçici popup göster
+                const kutu = document.getElementById("bildirimKutusu");
+                const bildirim = document.createElement("div");
+                bildirim.className = "alert alert-info alert-dismissible fade show shadow";
+                bildirim.innerHTML = `
+                    <strong>🔔 Yeni Talep!</strong> ${mesaj}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                kutu.appendChild(bildirim);
+                setTimeout(() => bildirim.remove(), 8000);
+
+                // Rozeti güncelle
+                rozetiGuncelle();
+            });
+
+            connection.start().catch(err => console.error(err));
+        </script>
+    }
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,22 @@
+@model List<kutuphane_sistemi.Models.Bildirim>
+
+<h2>Bildirimler</h2>
+
+<form asp-action="TumunuOkunduYap" method="post" class="mb-3">
+    <button type="submit" class="btn btn-outline-secondary btn-sm">Tümünü Okundu Yap</button>
+</form>
+
+<ul class="list-group">
+    @foreach (var bildirim in Model)
+    {
+        <li class="list-group-item @(bildirim.Okundu ? "" : "list-group-item-warning")">
+            @bildirim.Mesaj
+            <small class="text-muted d-block">@bildirim.OlusturmaTarihi.ToString("dd.MM.yyyy HH:mm")</small>
+        </li>
+    }
+</ul>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Henüz bildirim yok.</p>
+}

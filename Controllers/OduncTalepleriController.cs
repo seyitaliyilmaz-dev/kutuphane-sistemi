@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using kutuphane_sistemi.Models;
 using System.Security.Claims;
@@ -10,14 +11,15 @@ namespace kutuphane_sistemi.Controllers;
 public class OduncTalepleriController : Controller
 {
     private readonly KutuphaneDbContext _context;
+    private readonly IHubContext<BildirimHub> _hubContext;
 
-    public OduncTalepleriController(KutuphaneDbContext context)
+    public OduncTalepleriController(KutuphaneDbContext context, IHubContext<BildirimHub> hubContext)
     {
         _context = context;
+        _hubContext = hubContext;
     }
 
     // GET: /OduncTalepleri
-    // Admin ise hepsini görür, öğrenci ise sadece kendi taleplerini görür
     public async Task<IActionResult> Index()
     {
         var sorgu = _context.OduncTalepleri
@@ -79,7 +81,19 @@ public class OduncTalepleriController : Controller
         }
 
         _context.OduncTalepleri.Add(talep);
+
+        var kitap = await _context.Kitaplar.FindAsync(talep.KitapID);
+        var ogrenci = await _context.Ogrenciler.FindAsync(talep.OgrenciID);
+        var mesaj = $"{ogrenci?.AdSoyad ?? "Bir öğrenci"} '{kitap?.Baslik ?? "bir kitap"}' için talep oluşturdu.";
+
+        // Bildirimi veritabanına kalıcı olarak kaydet
+        _context.Bildirimler.Add(new Bildirim { Mesaj = mesaj });
+
         await _context.SaveChangesAsync();
+
+        // Anlık bildirim için SignalR'a da gönder
+        await _hubContext.Clients.All.SendAsync("YeniTalep", mesaj);
+
         return RedirectToAction(nameof(Index));
     }
 
