@@ -16,7 +16,7 @@ public class KitaplarController : Controller
     }
 
     // GET: /Kitaplar
-    public async Task<IActionResult> Index(string? arama, int sayfa = 1)
+    public async Task<IActionResult> Index(string? arama, int sayfa = 1, string sirala = "baslik_az")
     {
         var sorgu = _context.Kitaplar.Include(k => k.Yazar).AsQueryable();
 
@@ -26,6 +26,15 @@ public class KitaplarController : Controller
                 k.Baslik.Contains(arama) ||
                 (k.Yazar != null && k.Yazar.AdSoyad.Contains(arama)));
         }
+
+        sorgu = sirala switch
+        {
+            "baslik_az" => sorgu.OrderBy(k => k.Baslik),
+            "baslik_za" => sorgu.OrderByDescending(k => k.Baslik),
+            "durum_rafta_once" => sorgu.OrderBy(k => k.OduncDurumu).ThenBy(k => k.Baslik),
+            "durum_oduncte_once" => sorgu.OrderByDescending(k => k.OduncDurumu).ThenBy(k => k.Baslik),
+            _ => sorgu.OrderBy(k => k.Baslik)
+        };
 
         int toplamKayit = await sorgu.CountAsync();
         int toplamSayfa = (int)Math.Ceiling(toplamKayit / (double)SayfaBasinaKayit);
@@ -41,6 +50,7 @@ public class KitaplarController : Controller
         ViewBag.AramaMetni = arama;
         ViewBag.MevcutSayfa = sayfa;
         ViewBag.ToplamSayfa = toplamSayfa;
+        ViewBag.Sirala = sirala;
 
         return View(kitaplar);
     }

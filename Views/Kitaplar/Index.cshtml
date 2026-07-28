@@ -2,10 +2,17 @@
 
 <h2>Kitap Listesi</h2>
 
-<form asp-action="Index" method="get" class="mb-3 d-flex gap-2">
-    <input type="text" name="arama" value="@ViewBag.AramaMetni" class="form-control" placeholder="Başlık veya yazar ara..." />
+<form asp-action="Index" method="get" class="mb-3 d-flex gap-2 flex-wrap">
+    <input type="text" name="arama" value="@ViewBag.AramaMetni" class="form-control" style="max-width: 300px;" placeholder="Başlık veya yazar ara..." />
     <button type="submit" class="btn btn-outline-primary">Ara</button>
     <a asp-action="Index" class="btn btn-outline-secondary">Temizle</a>
+
+    <select name="sirala" class="form-control" style="max-width: 250px;" onchange="this.form.submit()">
+        <option value="baslik_az" selected="@(ViewBag.Sirala == "baslik_az")">Başlık (A-Z)</option>
+        <option value="baslik_za" selected="@(ViewBag.Sirala == "baslik_za")">Başlık (Z-A)</option>
+        <option value="durum_rafta_once" selected="@(ViewBag.Sirala == "durum_rafta_once")">Önce Rafta Olanlar</option>
+        <option value="durum_oduncte_once" selected="@(ViewBag.Sirala == "durum_oduncte_once")">Önce Ödünçte Olanlar</option>
+    </select>
 </form>
 
 @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
@@ -31,7 +38,16 @@
             <tr>
                 <td>@kitap.Baslik</td>
                 <td>@(kitap.Yazar?.AdSoyad ?? "Bilinmiyor")</td>
-                <td>@(kitap.OduncDurumu ? "Ödünçte" : "Rafta")</td>
+                <td>
+                    @if (kitap.OduncDurumu)
+                    {
+                        <span class="badge bg-danger">Ödünçte</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Rafta</span>
+                    }
+                </td>
                 @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                 {
                     <td>
@@ -61,7 +77,7 @@
             @for (int i = 1; i <= toplamSayfa; i++)
             {
                 <li class="page-item @(i == mevcutSayfa ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-sayfa="@i" asp-route-arama="@ViewBag.AramaMetni">@i</a>
+                    <a class="page-link" asp-action="Index" asp-route-sayfa="@i" asp-route-arama="@ViewBag.AramaMetni" asp-route-sirala="@ViewBag.Sirala">@i</a>
                 </li>
             }
         </ul>
