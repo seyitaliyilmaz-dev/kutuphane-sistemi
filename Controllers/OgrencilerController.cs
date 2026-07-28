@@ -5,6 +5,7 @@ using kutuphane_sistemi.Models;
 
 namespace kutuphane_sistemi.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class OgrencilerController : Controller
 {
     private readonly KutuphaneDbContext _context;
@@ -20,13 +21,11 @@ public class OgrencilerController : Controller
         return View(ogrenciler);
     }
 
-    [Authorize]
     public IActionResult Create()
     {
         return View();
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(Ogrenci ogrenci)
     {
@@ -40,7 +39,6 @@ public class OgrencilerController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [Authorize]
     public async Task<IActionResult> Edit(int id)
     {
         var ogrenci = await _context.Ogrenciler.FindAsync(id);
@@ -51,7 +49,6 @@ public class OgrencilerController : Controller
         return View(ogrenci);
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Edit(int id, Ogrenci ogrenci)
     {
@@ -70,7 +67,6 @@ public class OgrencilerController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
         var ogrenci = await _context.Ogrenciler.FirstOrDefaultAsync(o => o.OgrenciID == id);
@@ -81,7 +77,6 @@ public class OgrencilerController : Controller
         return View(ogrenci);
     }
 
-    [Authorize]
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

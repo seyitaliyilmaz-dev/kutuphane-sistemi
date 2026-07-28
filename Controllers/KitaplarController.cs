@@ -32,16 +32,14 @@ public class KitaplarController : Controller
         return View(kitaplar);
     }
 
-    // GET: /Kitaplar/Create (sadece giriş yapan)
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         ViewBag.Yazarlar = _context.Yazarlar.ToList();
         return View();
     }
 
-    // POST: /Kitaplar/Create (sadece giriş yapan)
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create(Kitap kitap)
     {
@@ -56,8 +54,7 @@ public class KitaplarController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: /Kitaplar/Edit/5 (sadece giriş yapan)
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id)
     {
         var kitap = await _context.Kitaplar.FindAsync(id);
@@ -69,8 +66,7 @@ public class KitaplarController : Controller
         return View(kitap);
     }
 
-    // POST: /Kitaplar/Edit/5 (sadece giriş yapan)
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Edit(int id, Kitap kitap)
     {
@@ -90,8 +86,7 @@ public class KitaplarController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: /Kitaplar/Delete/5 (sadece giriş yapan)
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var kitap = await _context.Kitaplar.Include(k => k.Yazar)
@@ -103,8 +98,7 @@ public class KitaplarController : Controller
         return View(kitap);
     }
 
-    // POST: /Kitaplar/Delete/5 (sadece giriş yapan)
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

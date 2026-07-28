@@ -20,13 +20,13 @@ public class YazarlarController : Controller
         return View(yazarlar);
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         return View();
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create(Yazar yazar)
     {
@@ -40,7 +40,7 @@ public class YazarlarController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id)
     {
         var yazar = await _context.Yazarlar.FindAsync(id);
@@ -51,7 +51,7 @@ public class YazarlarController : Controller
         return View(yazar);
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Edit(int id, Yazar yazar)
     {
@@ -70,7 +70,7 @@ public class YazarlarController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var yazar = await _context.Yazarlar
@@ -83,7 +83,7 @@ public class YazarlarController : Controller
         return View(yazar);
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
