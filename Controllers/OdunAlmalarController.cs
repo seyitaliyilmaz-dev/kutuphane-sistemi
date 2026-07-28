@@ -5,6 +5,7 @@ using kutuphane_sistemi.Models;
 
 namespace kutuphane_sistemi.Controllers;
 
+[Authorize]
 public class OdunAlmalarController : Controller
 {
     private readonly KutuphaneDbContext _context;
@@ -14,6 +15,8 @@ public class OdunAlmalarController : Controller
         _context = context;
     }
 
+    // GET: /OdunAlmalar (sadece Admin - tüm kayıtlar)
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Index()
     {
         var odunAlmalar = await _context.OdunAlmalar
@@ -24,42 +27,26 @@ public class OdunAlmalarController : Controller
         return View(odunAlmalar);
     }
 
-    [Authorize]
-    public IActionResult Create()
+    // GET: /OdunAlmalar/Gecmisim (sadece Öğrenci - kendi kayıtları)
+    public async Task<IActionResult> Gecmisim()
     {
-        ViewBag.Kitaplar = _context.Kitaplar.Where(k => !k.OduncDurumu).ToList();
-        ViewBag.Ogrenciler = _context.Ogrenciler.ToList();
-        return View();
+        var ogrenciIdClaim = User.FindFirst("OgrenciID");
+        if (ogrenciIdClaim == null)
+        {
+            return Forbid();
+        }
+        int ogrenciId = int.Parse(ogrenciIdClaim.Value);
+
+        var kayitlarim = await _context.OdunAlmalar
+            .Include(o => o.Kitap)
+            .Where(o => o.OgrenciID == ogrenciId)
+            .OrderByDescending(o => o.AlisTarihi)
+            .ToListAsync();
+
+        return View(kayitlarim);
     }
 
-    [Authorize]
-    [HttpPost]
-    public async Task<IActionResult> Create(OdunAlma odunAlma)
-    {
-        if (!ModelState.IsValid)
-        {
-            ViewBag.Kitaplar = _context.Kitaplar.Where(k => !k.OduncDurumu).ToList();
-            ViewBag.Ogrenciler = _context.Ogrenciler.ToList();
-            return View(odunAlma);
-        }
-
-        odunAlma.AlisTarihi = DateTime.Now;
-        odunAlma.SonTeslimTarihi = DateTime.Now.AddDays(14);
-        odunAlma.IadeTarihi = null;
-
-        _context.OdunAlmalar.Add(odunAlma);
-
-        var kitap = await _context.Kitaplar.FindAsync(odunAlma.KitapID);
-        if (kitap != null)
-        {
-            kitap.OduncDurumu = true;
-        }
-
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> IadeEt(int id)
     {

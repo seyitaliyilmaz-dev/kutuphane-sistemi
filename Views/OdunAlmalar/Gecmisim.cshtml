@@ -1,0 +1,44 @@
+@model List<kutuphane_sistemi.Models.OdunAlma>
+
+<h2>📚 Ödünç Geçmişim</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Kitap</th>
+            <th>Alış Tarihi</th>
+            <th>Son Teslim</th>
+            <th>Durum</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var kayit in Model)
+        {
+            bool gecTeslim = kayit.IadeTarihi == null && kayit.SonTeslimTarihi < DateTime.Now;
+            <tr class="@(gecTeslim ? "table-danger" : "")">
+                <td>@(kayit.Kitap?.Baslik ?? "Bilinmiyor")</td>
+                <td>@kayit.AlisTarihi.ToString("dd.MM.yyyy")</td>
+                <td>@kayit.SonTeslimTarihi.ToString("dd.MM.yyyy")</td>
+                <td>
+                    @if (kayit.IadeTarihi != null)
+                    {
+                        <span class="badge bg-success">İade edildi (@kayit.IadeTarihi.Value.ToString("dd.MM.yyyy"))</span>
+                    }
+                    else if (gecTeslim)
+                    {
+                        <span class="badge bg-danger">GECİKTİ</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">Elimde</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Henüz ödünç aldığınız bir kitap yok.</p>
+}

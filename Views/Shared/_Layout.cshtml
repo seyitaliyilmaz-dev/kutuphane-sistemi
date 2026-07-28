@@ -73,6 +73,12 @@
                                 <a class="nav-link" asp-area="" asp-controller="OdunAlmalar" asp-action="Index">🔄 Ödünç Almalar</a>
                             </li>
                         }
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="OdunAlmalar" asp-action="Gecmisim">📚 Geçmişim</a>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav align-items-center">
                         @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
