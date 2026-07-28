@@ -8,7 +8,10 @@
     <a asp-action="Index" class="btn btn-outline-secondary">Temizle</a>
 </form>
 
-<a asp-action="Create" class="btn btn-primary mb-3">+ Yeni Kitap Ekle</a>
+@if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <a asp-action="Create" class="btn btn-primary mb-3">+ Yeni Kitap Ekle</a>
+}
 
 <table class="table">
     <thead>
@@ -16,7 +19,10 @@
             <th>Başlık</th>
             <th>Yazar</th>
             <th>Durum</th>
-            <th>İşlemler</th>
+            @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                <th>İşlemler</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -26,10 +32,13 @@
                 <td>@kitap.Baslik</td>
                 <td>@(kitap.Yazar?.AdSoyad ?? "Bilinmiyor")</td>
                 <td>@(kitap.OduncDurumu ? "Ödünçte" : "Rafta")</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@kitap.KitapID" class="btn btn-sm btn-warning">Düzenle</a>
-                    <a asp-action="Delete" asp-route-id="@kitap.KitapID" class="btn btn-sm btn-danger">Sil</a>
-                </td>
+                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@kitap.KitapID" class="btn btn-sm btn-warning">Düzenle</a>
+                        <a asp-action="Delete" asp-route-id="@kitap.KitapID" class="btn btn-sm btn-danger">Sil</a>
+                    </td>
+                }
             </tr>
         }
     </tbody>
@@ -38,4 +47,23 @@
 @if (!Model.Any())
 {
     <p class="text-muted">Aramanıza uygun kitap bulunamadı.</p>
+}
+
+@{
+    int mevcutSayfa = ViewBag.MevcutSayfa;
+    int toplamSayfa = ViewBag.ToplamSayfa;
+}
+
+@if (toplamSayfa > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= toplamSayfa; i++)
+            {
+                <li class="page-item @(i == mevcutSayfa ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-sayfa="@i" asp-route-arama="@ViewBag.AramaMetni">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
 }

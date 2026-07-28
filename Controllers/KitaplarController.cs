@@ -8,14 +8,15 @@ namespace kutuphane_sistemi.Controllers;
 public class KitaplarController : Controller
 {
     private readonly KutuphaneDbContext _context;
+    private const int SayfaBasinaKayit = 5;
 
     public KitaplarController(KutuphaneDbContext context)
     {
         _context = context;
     }
 
-    // GET: /Kitaplar (herkese açık)
-    public async Task<IActionResult> Index(string? arama)
+    // GET: /Kitaplar
+    public async Task<IActionResult> Index(string? arama, int sayfa = 1)
     {
         var sorgu = _context.Kitaplar.Include(k => k.Yazar).AsQueryable();
 
@@ -26,9 +27,21 @@ public class KitaplarController : Controller
                 (k.Yazar != null && k.Yazar.AdSoyad.Contains(arama)));
         }
 
-        ViewBag.AramaMetni = arama;
+        int toplamKayit = await sorgu.CountAsync();
+        int toplamSayfa = (int)Math.Ceiling(toplamKayit / (double)SayfaBasinaKayit);
 
-        var kitaplar = await sorgu.ToListAsync();
+        if (sayfa < 1) sayfa = 1;
+        if (toplamSayfa > 0 && sayfa > toplamSayfa) sayfa = toplamSayfa;
+
+        var kitaplar = await sorgu
+            .Skip((sayfa - 1) * SayfaBasinaKayit)
+            .Take(SayfaBasinaKayit)
+            .ToListAsync();
+
+        ViewBag.AramaMetni = arama;
+        ViewBag.MevcutSayfa = sayfa;
+        ViewBag.ToplamSayfa = toplamSayfa;
+
         return View(kitaplar);
     }
 
