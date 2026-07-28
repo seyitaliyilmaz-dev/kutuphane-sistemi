@@ -22,6 +22,29 @@ public class HomeController : Controller
         ViewBag.GecikmisKayit = await _context.OdunAlmalar
             .CountAsync(o => o.IadeTarihi == null && o.SonTeslimTarihi < DateTime.Now);
 
+        // Grafik 1: Kitap durumu (Rafta / Ödünçte)
+        int raftaSayisi = await _context.Kitaplar.CountAsync(k => !k.OduncDurumu);
+        int oduncteSayisi = await _context.Kitaplar.CountAsync(k => k.OduncDurumu);
+        ViewBag.KitapDurumEtiketleri = new[] { "Rafta", "Ödünçte" };
+        ViewBag.KitapDurumSayilari = new[] { raftaSayisi, oduncteSayisi };
+
+        // Grafik 2: Yazar başına kitap sayısı (en çok 5 yazar)
+        var yazarKitapSayilari = await _context.Yazarlar
+            .Select(y => new { y.AdSoyad, KitapSayisi = y.Kitaplar!.Count })
+            .OrderByDescending(y => y.KitapSayisi)
+            .Take(5)
+            .ToListAsync();
+
+        ViewBag.YazarEtiketleri = yazarKitapSayilari.Select(y => y.AdSoyad).ToArray();
+        ViewBag.YazarKitapSayilari = yazarKitapSayilari.Select(y => y.KitapSayisi).ToArray();
+
+        // Grafik 3: Talep durumları
+        int beklemede = await _context.OduncTalepleri.CountAsync(t => t.Durum == "Beklemede");
+        int onaylandi = await _context.OduncTalepleri.CountAsync(t => t.Durum == "Onaylandi");
+        int reddedildi = await _context.OduncTalepleri.CountAsync(t => t.Durum == "Reddedildi");
+        ViewBag.TalepEtiketleri = new[] { "Beklemede", "Onaylandı", "Reddedildi" };
+        ViewBag.TalepSayilari = new[] { beklemede, onaylandi, reddedildi };
+
         return View();
     }
 

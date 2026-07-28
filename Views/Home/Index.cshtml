@@ -2,39 +2,132 @@
     ViewData["Title"] = "Ana Sayfa";
 }
 
-<h1>📚 Kütüphane Yönetim Paneli</h1>
+<h1 class="mb-4">📚 Kütüphane Yönetim Paneli</h1>
 
-<div class="row mt-4">
+<div class="row mt-4 g-3">
     <div class="col-md-3">
-        <div class="card text-white bg-primary mb-3">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 16px; background: linear-gradient(135deg, #4e73df, #224abe); color: white;">
             <div class="card-body">
-                <h5 class="card-title">Toplam Kitap</h5>
-                <p class="card-text fs-2">@ViewBag.ToplamKitap</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-uppercase small">Toplam Kitap</div>
+                        <div class="fs-1 fw-bold">@ViewBag.ToplamKitap</div>
+                    </div>
+                    <div class="fs-1 opacity-50">📖</div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-white bg-warning mb-3">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 16px; background: linear-gradient(135deg, #f6c23e, #dda20a); color: white;">
             <div class="card-body">
-                <h5 class="card-title">Ödünçte Olan</h5>
-                <p class="card-text fs-2">@ViewBag.OduncteKitap</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-uppercase small">Ödünçte Olan</div>
+                        <div class="fs-1 fw-bold">@ViewBag.OduncteKitap</div>
+                    </div>
+                    <div class="fs-1 opacity-50">📤</div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-white bg-info mb-3">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 16px; background: linear-gradient(135deg, #36b9cc, #258391); color: white;">
             <div class="card-body">
-                <h5 class="card-title">Toplam Öğrenci</h5>
-                <p class="card-text fs-2">@ViewBag.ToplamOgrenci</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-uppercase small">Toplam Öğrenci</div>
+                        <div class="fs-1 fw-bold">@ViewBag.ToplamOgrenci</div>
+                    </div>
+                    <div class="fs-1 opacity-50">🎓</div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-white bg-danger mb-3">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 16px; background: linear-gradient(135deg, #e74a3b, #b02a1f); color: white;">
             <div class="card-body">
-                <h5 class="card-title">Gecikmiş Kayıt</h5>
-                <p class="card-text fs-2">@ViewBag.GecikmisKayit</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-uppercase small">Gecikmiş Kayıt</div>
+                        <div class="fs-1 fw-bold">@ViewBag.GecikmisKayit</div>
+                    </div>
+                    <div class="fs-1 opacity-50">⚠️</div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<div class="row mt-4 g-3">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm" style="border-radius: 16px;">
+            <div class="card-body">
+                <h5 class="card-title">Kitap Durumu</h5>
+                <canvas id="kitapDurumGrafigi"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm" style="border-radius: 16px;">
+            <div class="card-body">
+                <h5 class="card-title">En Çok Kitaplı Yazarlar</h5>
+                <canvas id="yazarGrafigi"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm" style="border-radius: 16px;">
+            <div class="card-body">
+                <h5 class="card-title">Talep Durumları</h5>
+                <canvas id="talepGrafigi"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Grafik 1: Kitap Durumu (Pasta)
+        new Chart(document.getElementById('kitapDurumGrafigi'), {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(Json.Serialize(ViewBag.KitapDurumEtiketleri)),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(ViewBag.KitapDurumSayilari)),
+                    backgroundColor: ['#1cc88a', '#f6c23e']
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Grafik 2: Yazar başına kitap sayısı (Bar)
+        new Chart(document.getElementById('yazarGrafigi'), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(ViewBag.YazarEtiketleri)),
+                datasets: [{
+                    label: 'Kitap Sayısı',
+                    data: @Html.Raw(Json.Serialize(ViewBag.YazarKitapSayilari)),
+                    backgroundColor: '#4e73df'
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        });
+
+        // Grafik 3: Talep Durumları (Bar)
+        new Chart(document.getElementById('talepGrafigi'), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(ViewBag.TalepEtiketleri)),
+                datasets: [{
+                    label: 'Talep Sayısı',
+                    data: @Html.Raw(Json.Serialize(ViewBag.TalepSayilari)),
+                    backgroundColor: ['#f6c23e', '#1cc88a', '#e74a3b']
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        });
+    </script>
+}

@@ -7,12 +7,37 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/kutuphane-sistemi.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #224abe, #4e73df) !important;
+        }
+        .navbar-brand, .nav-link, .navbar-toggler-icon {
+            color: white !important;
+        }
+        .nav-link:hover {
+            color: #d1d9ff !important;
+        }
+        .card {
+            transition: transform 0.15s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+        }
+        .table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">📚 Kütüphane Sistemi</a>
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">📚 Kütüphane Sistemi</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,32 +45,32 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">🏠 Ana Sayfa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Kitaplar" asp-action="Index">Kitaplar</a>
+                            <a class="nav-link" asp-area="" asp-controller="Kitaplar" asp-action="Index">📖 Kitaplar</a>
                         </li>
                         @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Yazarlar" asp-action="Index">Yazarlar</a>
+                                <a class="nav-link" asp-area="" asp-controller="Yazarlar" asp-action="Index">✍️ Yazarlar</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Ogrenciler" asp-action="Index">Öğrenciler</a>
+                                <a class="nav-link" asp-area="" asp-controller="Ogrenciler" asp-action="Index">🎓 Öğrenciler</a>
                             </li>
                         }
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="OduncTalepleri" asp-action="Index">
-                                    @(User.IsInRole("Admin") ? "Talepler" : "Taleplerim")
+                                <a class="nav-link" asp-area="" asp-controller="OduncTalepleri" asp-action="Index">
+                                    📋 @(User.IsInRole("Admin") ? "Talepler" : "Taleplerim")
                                 </a>
                             </li>
                         }
                         @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="OdunAlmalar" asp-action="Index">Ödünç Almalar</a>
+                                <a class="nav-link" asp-area="" asp-controller="OdunAlmalar" asp-action="Index">🔄 Ödünç Almalar</a>
                             </li>
                         }
                     </ul>
@@ -53,7 +78,7 @@
                         @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <li class="nav-item me-3">
-                                <a class="nav-link text-dark position-relative" asp-controller="Bildirimler" asp-action="Index" id="bildirimIkonu">
+                                <a class="nav-link position-relative" asp-controller="Bildirimler" asp-action="Index" id="bildirimIkonu">
                                     🔔
                                     <span id="bildirimRozeti" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none;">
                                         0
@@ -64,7 +89,7 @@
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item d-flex align-items-center me-2">
-                                <span class="text-dark">Hoş geldin, @User.Identity.Name (@(User.IsInRole("Admin") ? "Admin" : "Öğrenci"))</span>
+                                <span class="text-white">👤 @User.Identity.Name (@(User.IsInRole("Admin") ? "Admin" : "Öğrenci"))</span>
                             </li>
                             <li class="nav-item">
                                 <form asp-controller="Account" asp-action="Logout" method="post">
@@ -75,7 +100,7 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Giriş Yap</a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">Giriş Yap</a>
                             </li>
                         }
                     </ul>
@@ -84,7 +109,6 @@
         </nav>
     </header>
 
-    <!-- Anlık (geçici) bildirim kutusu -->
     <div id="bildirimKutusu" style="position: fixed; top: 70px; right: 20px; z-index: 9999; max-width: 350px;"></div>
 
     <div class="container">
@@ -106,7 +130,6 @@
     {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
         <script>
-            // Sayfa açıldığında okunmamış bildirim sayısını çek
             function rozetiGuncelle() {
                 fetch('/Bildirimler/OkunmamisSayisi')
                     .then(r => r.json())
@@ -122,13 +145,11 @@
             }
             rozetiGuncelle();
 
-            // Anlık bildirim bağlantısı
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl("/bildirimHub")
                 .build();
 
             connection.on("YeniTalep", function (mesaj) {
-                // Geçici popup göster
                 const kutu = document.getElementById("bildirimKutusu");
                 const bildirim = document.createElement("div");
                 bildirim.className = "alert alert-info alert-dismissible fade show shadow";
@@ -138,8 +159,6 @@
                 `;
                 kutu.appendChild(bildirim);
                 setTimeout(() => bildirim.remove(), 8000);
-
-                // Rozeti güncelle
                 rozetiGuncelle();
             });
 
