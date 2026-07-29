@@ -1,0 +1,14 @@
+@model kutuphane_sistemi.Models.Kategori
+
+<h2>Yeni Kategori Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label>Kategori Adı</label>
+        <input asp-for="Ad" class="form-control" />
+        <span asp-validation-for="Ad" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

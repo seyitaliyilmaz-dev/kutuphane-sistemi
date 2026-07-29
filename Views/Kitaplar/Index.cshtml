@@ -7,11 +7,19 @@
     <button type="submit" class="btn btn-outline-primary">Ara</button>
     <a asp-action="Index" class="btn btn-outline-secondary">Temizle</a>
 
-    <select name="sirala" class="form-control" style="max-width: 250px;" onchange="this.form.submit()">
+    <select name="sirala" class="form-control" style="max-width: 220px;" onchange="this.form.submit()">
         <option value="baslik_az" selected="@(ViewBag.Sirala == "baslik_az")">Başlık (A-Z)</option>
         <option value="baslik_za" selected="@(ViewBag.Sirala == "baslik_za")">Başlık (Z-A)</option>
         <option value="durum_rafta_once" selected="@(ViewBag.Sirala == "durum_rafta_once")">Önce Rafta Olanlar</option>
         <option value="durum_oduncte_once" selected="@(ViewBag.Sirala == "durum_oduncte_once")">Önce Ödünçte Olanlar</option>
+    </select>
+
+    <select name="kategoriId" class="form-control" style="max-width: 220px;" onchange="this.form.submit()">
+        <option value="">Tüm Kategoriler</option>
+        @foreach (var kategori in (List<kutuphane_sistemi.Models.Kategori>)ViewBag.Kategoriler)
+        {
+            <option value="@kategori.KategoriID" selected="@(ViewBag.KategoriId == kategori.KategoriID)">@kategori.Ad</option>
+        }
     </select>
 </form>
 
@@ -25,6 +33,7 @@
         <tr>
             <th>Başlık</th>
             <th>Yazar</th>
+            <th>Kategori</th>
             <th>Durum</th>
             @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
             {
@@ -38,6 +47,7 @@
             <tr>
                 <td>@kitap.Baslik</td>
                 <td>@(kitap.Yazar?.AdSoyad ?? "Bilinmiyor")</td>
+                <td>@(kitap.Kategori?.Ad ?? "-")</td>
                 <td>
                     @if (kitap.OduncDurumu)
                     {
@@ -77,7 +87,7 @@
             @for (int i = 1; i <= toplamSayfa; i++)
             {
                 <li class="page-item @(i == mevcutSayfa ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-sayfa="@i" asp-route-arama="@ViewBag.AramaMetni" asp-route-sirala="@ViewBag.Sirala">@i</a>
+                    <a class="page-link" asp-action="Index" asp-route-sayfa="@i" asp-route-arama="@ViewBag.AramaMetni" asp-route-sirala="@ViewBag.Sirala" asp-route-kategoriId="@ViewBag.KategoriId">@i</a>
                 </li>
             }
         </ul>

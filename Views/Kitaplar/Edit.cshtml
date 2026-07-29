@@ -8,14 +8,28 @@
     <div class="mb-3">
         <label>Başlık</label>
         <input asp-for="Baslik" class="form-control" />
+        <span asp-validation-for="Baslik" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label>Yazar</label>
         <select asp-for="YazarID" class="form-control">
+            <option value="0">-- Seçiniz --</option>
             @foreach (var yazar in (List<kutuphane_sistemi.Models.Yazar>)ViewBag.Yazarlar)
             {
                 <option value="@yazar.YazarID">@yazar.AdSoyad</option>
+            }
+        </select>
+        <span asp-validation-for="YazarID" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>Kategori</label>
+        <select asp-for="KategoriID" class="form-control">
+            <option value="">-- Kategori Yok --</option>
+            @foreach (var kategori in (List<kutuphane_sistemi.Models.Kategori>)ViewBag.Kategoriler)
+            {
+                <option value="@kategori.KategoriID">@kategori.Ad</option>
             }
         </select>
     </div>

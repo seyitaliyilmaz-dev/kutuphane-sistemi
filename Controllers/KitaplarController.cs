@@ -16,15 +16,20 @@ public class KitaplarController : Controller
     }
 
     // GET: /Kitaplar
-    public async Task<IActionResult> Index(string? arama, int sayfa = 1, string sirala = "baslik_az")
+    public async Task<IActionResult> Index(string? arama, int sayfa = 1, string sirala = "baslik_az", int? kategoriId = null)
     {
-        var sorgu = _context.Kitaplar.Include(k => k.Yazar).AsQueryable();
+        var sorgu = _context.Kitaplar.Include(k => k.Yazar).Include(k => k.Kategori).AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(arama))
         {
             sorgu = sorgu.Where(k =>
                 k.Baslik.Contains(arama) ||
                 (k.Yazar != null && k.Yazar.AdSoyad.Contains(arama)));
+        }
+
+        if (kategoriId.HasValue && kategoriId.Value > 0)
+        {
+            sorgu = sorgu.Where(k => k.KategoriID == kategoriId.Value);
         }
 
         sorgu = sirala switch
@@ -51,6 +56,8 @@ public class KitaplarController : Controller
         ViewBag.MevcutSayfa = sayfa;
         ViewBag.ToplamSayfa = toplamSayfa;
         ViewBag.Sirala = sirala;
+        ViewBag.KategoriId = kategoriId;
+        ViewBag.Kategoriler = _context.Kategoriler.ToList();
 
         return View(kitaplar);
     }
@@ -59,6 +66,7 @@ public class KitaplarController : Controller
     public IActionResult Create()
     {
         ViewBag.Yazarlar = _context.Yazarlar.ToList();
+        ViewBag.Kategoriler = _context.Kategoriler.ToList();
         return View();
     }
 
@@ -69,6 +77,7 @@ public class KitaplarController : Controller
         if (!ModelState.IsValid)
         {
             ViewBag.Yazarlar = _context.Yazarlar.ToList();
+            ViewBag.Kategoriler = _context.Kategoriler.ToList();
             return View(kitap);
         }
 
@@ -86,6 +95,7 @@ public class KitaplarController : Controller
             return NotFound();
         }
         ViewBag.Yazarlar = _context.Yazarlar.ToList();
+        ViewBag.Kategoriler = _context.Kategoriler.ToList();
         return View(kitap);
     }
 
@@ -101,6 +111,7 @@ public class KitaplarController : Controller
         if (!ModelState.IsValid)
         {
             ViewBag.Yazarlar = _context.Yazarlar.ToList();
+            ViewBag.Kategoriler = _context.Kategoriler.ToList();
             return View(kitap);
         }
 

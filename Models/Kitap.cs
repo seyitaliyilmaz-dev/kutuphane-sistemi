@@ -16,4 +16,7 @@ public class Kitap
     [Range(1, int.MaxValue, ErrorMessage = "Lütfen bir yazar seçin.")]
     public int YazarID { get; set; }
     public Yazar? Yazar { get; set; }
+
+    public int? KategoriID { get; set; }
+    public Kategori? Kategori { get; set; }
 }

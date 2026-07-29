@@ -21,6 +21,17 @@
         <span asp-validation-for="YazarID" class="text-danger"></span>
     </div>
 
+    <div class="mb-3">
+        <label>Kategori</label>
+        <select asp-for="KategoriID" class="form-control">
+            <option value="">-- Kategori Yok --</option>
+            @foreach (var kategori in (List<kutuphane_sistemi.Models.Kategori>)ViewBag.Kategoriler)
+            {
+                <option value="@kategori.KategoriID">@kategori.Ad</option>
+            }
+        </select>
+    </div>
+
     <button type="submit" class="btn btn-primary">Kaydet</button>
     <a asp-action="Index" class="btn btn-secondary">İptal</a>
 </form>

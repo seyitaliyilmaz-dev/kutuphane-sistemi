@@ -1,0 +1,18 @@
+@model kutuphane_sistemi.Models.Kategori
+
+<h2>Kategoriyi Sil</h2>
+
+<p>Bu kategoriyi silmek istediğinize emin misiniz?</p>
+
+<dl>
+    <dt>Kategori Adı</dt>
+    <dd>@Model.Ad</dd>
+    <dt>Kitap Sayısı</dt>
+    <dd>@(Model.Kitaplar?.Count ?? 0)</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="KategoriID" />
+    <button type="submit" class="btn btn-danger">Evet, Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
