@@ -28,27 +28,25 @@
     <a asp-action="Create" class="btn btn-primary mb-3">+ Yeni Kitap Ekle</a>
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Başlık</th>
-            <th>Yazar</th>
-            <th>Kategori</th>
-            <th>Durum</th>
-            @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-            {
-                <th>İşlemler</th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var kitap in Model)
-        {
-            <tr>
-                <td>@kitap.Baslik</td>
-                <td>@(kitap.Yazar?.AdSoyad ?? "Bilinmiyor")</td>
-                <td>@(kitap.Kategori?.Ad ?? "-")</td>
-                <td>
+<div class="row g-3">
+    @foreach (var kitap in Model)
+    {
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm" style="border-radius: 12px;">
+                @if (!string.IsNullOrEmpty(kitap.ResimYolu))
+                {
+                    <img src="@kitap.ResimYolu" class="card-img-top" style="height: 200px; object-fit: cover; border-radius: 12px 12px 0 0;" alt="@kitap.Baslik" />
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-center bg-light" style="height: 200px; border-radius: 12px 12px 0 0; font-size: 3rem;">
+                        📕
+                    </div>
+                }
+                <div class="card-body">
+                    <h6 class="card-title">@kitap.Baslik</h6>
+                    <p class="card-text small text-muted mb-1">@(kitap.Yazar?.AdSoyad ?? "Bilinmiyor")</p>
+                    <p class="card-text small mb-2">@(kitap.Kategori?.Ad ?? "-")</p>
                     @if (kitap.OduncDurumu)
                     {
                         <span class="badge bg-danger">Ödünçte</span>
@@ -57,22 +55,22 @@
                     {
                         <span class="badge bg-success">Rafta</span>
                     }
-                </td>
-                @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                {
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@kitap.KitapID" class="btn btn-sm btn-warning">Düzenle</a>
-                        <a asp-action="Delete" asp-route-id="@kitap.KitapID" class="btn btn-sm btn-danger">Sil</a>
-                    </td>
-                }
-            </tr>
-        }
-    </tbody>
-</table>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <div class="mt-2">
+                            <a asp-action="Edit" asp-route-id="@kitap.KitapID" class="btn btn-sm btn-warning">Düzenle</a>
+                            <a asp-action="Delete" asp-route-id="@kitap.KitapID" class="btn btn-sm btn-danger">Sil</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
 @if (!Model.Any())
 {
-    <p class="text-muted">Aramanıza uygun kitap bulunamadı.</p>
+    <p class="text-muted mt-3">Aramanıza uygun kitap bulunamadı.</p>
 }
 
 @{
@@ -82,7 +80,7 @@
 
 @if (toplamSayfa > 1)
 {
-    <nav>
+    <nav class="mt-3">
         <ul class="pagination">
             @for (int i = 1; i <= toplamSayfa; i++)
             {

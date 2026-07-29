@@ -8,11 +8,13 @@ namespace kutuphane_sistemi.Controllers;
 public class KitaplarController : Controller
 {
     private readonly KutuphaneDbContext _context;
-    private const int SayfaBasinaKayit = 5;
+    private readonly IWebHostEnvironment _environment;
+    private const int SayfaBasinaKayit = 8;
 
-    public KitaplarController(KutuphaneDbContext context)
+    public KitaplarController(KutuphaneDbContext context, IWebHostEnvironment environment)
     {
         _context = context;
+        _environment = environment;
     }
 
     // GET: /Kitaplar
@@ -72,13 +74,18 @@ public class KitaplarController : Controller
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> Create(Kitap kitap)
+    public async Task<IActionResult> Create(Kitap kitap, IFormFile? resimDosyasi)
     {
         if (!ModelState.IsValid)
         {
             ViewBag.Yazarlar = _context.Yazarlar.ToList();
             ViewBag.Kategoriler = _context.Kategoriler.ToList();
             return View(kitap);
+        }
+
+        if (resimDosyasi != null && resimDosyasi.Length > 0)
+        {
+            kitap.ResimYolu = await ResmiKaydet(resimDosyasi);
         }
 
         _context.Kitaplar.Add(kitap);
@@ -101,7 +108,7 @@ public class KitaplarController : Controller
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> Edit(int id, Kitap kitap)
+    public async Task<IActionResult> Edit(int id, Kitap kitap, IFormFile? resimDosyasi)
     {
         if (id != kitap.KitapID)
         {
@@ -113,6 +120,17 @@ public class KitaplarController : Controller
             ViewBag.Yazarlar = _context.Yazarlar.ToList();
             ViewBag.Kategoriler = _context.Kategoriler.ToList();
             return View(kitap);
+        }
+
+        var mevcutKitap = await _context.Kitaplar.AsNoTracking().FirstOrDefaultAsync(k => k.KitapID == id);
+
+        if (resimDosyasi != null && resimDosyasi.Length > 0)
+        {
+            kitap.ResimYolu = await ResmiKaydet(resimDosyasi);
+        }
+        else
+        {
+            kitap.ResimYolu = mevcutKitap?.ResimYolu;
         }
 
         _context.Update(kitap);
@@ -143,5 +161,26 @@ public class KitaplarController : Controller
             await _context.SaveChangesAsync();
         }
         return RedirectToAction(nameof(Index));
+    }
+
+    private async Task<string> ResmiKaydet(IFormFile dosya)
+    {
+        var uzanti = Path.GetExtension(dosya.FileName);
+        var dosyaAdi = $"{Guid.NewGuid()}{uzanti}";
+        var klasorYolu = Path.Combine(_environment.WebRootPath, "kitap-resimleri");
+
+        if (!Directory.Exists(klasorYolu))
+        {
+            Directory.CreateDirectory(klasorYolu);
+        }
+
+        var tamYol = Path.Combine(klasorYolu, dosyaAdi);
+
+        using (var stream = new FileStream(tamYol, FileMode.Create))
+        {
+            await dosya.CopyToAsync(stream);
+        }
+
+        return $"/kitap-resimleri/{dosyaAdi}";
     }
 }

@@ -19,4 +19,6 @@ public class Kitap
 
     public int? KategoriID { get; set; }
     public Kategori? Kategori { get; set; }
+
+    public string? ResimYolu { get; set; }
 }

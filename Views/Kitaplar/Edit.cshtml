@@ -2,7 +2,14 @@
 
 <h2>Kitap Düzenle</h2>
 
-<form asp-action="Edit" method="post">
+@if (!string.IsNullOrEmpty(Model.ResimYolu))
+{
+    <div class="mb-3">
+        <img src="@Model.ResimYolu" alt="Kapak" style="max-width: 150px; border-radius: 8px;" />
+    </div>
+}
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="KitapID" />
 
     <div class="mb-3">
@@ -32,6 +39,11 @@
                 <option value="@kategori.KategoriID">@kategori.Ad</option>
             }
         </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Yeni Kapak Resmi (değiştirmek istemiyorsanız boş bırakın)</label>
+        <input type="file" name="resimDosyasi" class="form-control" accept="image/*" />
     </div>
 
     <div class="mb-3">
