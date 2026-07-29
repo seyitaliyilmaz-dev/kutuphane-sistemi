@@ -58,3 +58,12 @@ dotnet run
 
 Bu proje bir öğrenme/staj çalışmasıdır. Şifre hash'leme SHA256 ile basitleştirilmiştir; gerçek bir üretim ortamında ASP.NET Core Identity veya BCrypt gibi salt destekli, endüstri standardı bir çözüm kullanılmalıdır.
 
+
+## Lisans
+
+Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakınız.
+
+## Geliştirici
+
+Seyit Ali Yılmaz
+
