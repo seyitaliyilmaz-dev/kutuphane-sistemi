@@ -15,28 +15,11 @@ public class OgrencilerController : Controller
         _context = context;
     }
 
+    // GET: /Ogrenciler (sadece görüntüleme, kayıtlar Register'dan gelir)
     public async Task<IActionResult> Index()
     {
         var ogrenciler = await _context.Ogrenciler.ToListAsync();
         return View(ogrenciler);
-    }
-
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create(Ogrenci ogrenci)
-    {
-        if (!ModelState.IsValid)
-        {
-            return View(ogrenci);
-        }
-
-        _context.Ogrenciler.Add(ogrenci);
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Edit(int id)
@@ -55,6 +38,14 @@ public class OgrencilerController : Controller
         if (id != ogrenci.OgrenciID)
         {
             return NotFound();
+        }
+
+        var varOlan = await _context.Ogrenciler
+            .FirstOrDefaultAsync(o => o.OgrenciNo == ogrenci.OgrenciNo && o.OgrenciID != id);
+
+        if (varOlan != null)
+        {
+            ModelState.AddModelError(nameof(ogrenci.OgrenciNo), "Bu öğrenci numarası başka bir öğrenci tarafından kullanılıyor.");
         }
 
         if (!ModelState.IsValid)
@@ -83,6 +74,12 @@ public class OgrencilerController : Controller
         var ogrenci = await _context.Ogrenciler.FindAsync(id);
         if (ogrenci != null)
         {
+            var kullanici = await _context.Kullanicilar.FirstOrDefaultAsync(k => k.OgrenciID == id);
+            if (kullanici != null)
+            {
+                _context.Kullanicilar.Remove(kullanici);
+            }
+
             _context.Ogrenciler.Remove(ogrenci);
             await _context.SaveChangesAsync();
         }

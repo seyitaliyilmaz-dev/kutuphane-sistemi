@@ -15,4 +15,15 @@ public class KutuphaneDbContext : DbContext
     public DbSet<OduncTalebi> OduncTalepleri { get; set; }
     public DbSet<Bildirim> Bildirimler { get; set; }
     public DbSet<Kategori> Kategoriler { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Ogrenci>()
+            .HasIndex(o => o.OgrenciNo)
+            .IsUnique();
+
+        modelBuilder.Entity<Kullanici>()
+            .HasIndex(k => k.KullaniciAdi)
+            .IsUnique();
+    }
 }

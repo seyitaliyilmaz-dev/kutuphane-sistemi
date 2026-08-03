@@ -17,7 +17,6 @@ public class KitaplarController : Controller
         _environment = environment;
     }
 
-    // GET: /Kitaplar
     public async Task<IActionResult> Index(string? arama, int sayfa = 1, string sirala = "baslik_az", int? kategoriId = null)
     {
         var sorgu = _context.Kitaplar.Include(k => k.Yazar).Include(k => k.Kategori).AsQueryable();
@@ -44,21 +43,21 @@ public class KitaplarController : Controller
         };
 
         int toplamKayit = await sorgu.CountAsync();
-        int toplamSayfa = (int)Math.Ceiling(toplamKayit / (double)SayfaBasinaKayit);
+        int toplamSayfa = Math.Max(1, (int)Math.Ceiling(toplamKayit / (double)SayfaBasinaKayit));
 
         if (sayfa < 1) sayfa = 1;
-        if (toplamSayfa > 0 && sayfa > toplamSayfa) sayfa = toplamSayfa;
+        if (sayfa > toplamSayfa) sayfa = toplamSayfa;
 
         var kitaplar = await sorgu
             .Skip((sayfa - 1) * SayfaBasinaKayit)
             .Take(SayfaBasinaKayit)
             .ToListAsync();
 
-        ViewBag.AramaMetni = arama;
+        ViewBag.AramaMetni = arama ?? "";
         ViewBag.MevcutSayfa = sayfa;
         ViewBag.ToplamSayfa = toplamSayfa;
         ViewBag.Sirala = sirala;
-        ViewBag.KategoriId = kategoriId;
+        ViewBag.KategoriId = kategoriId ?? 0;
         ViewBag.Kategoriler = _context.Kategoriler.ToList();
 
         return View(kitaplar);

@@ -85,6 +85,15 @@ public class AccountController : Controller
             return View(kayit);
         }
 
+        var varOlanOgrenciNo = await _context.Ogrenciler
+            .FirstOrDefaultAsync(o => o.OgrenciNo == kayit.OgrenciNo);
+
+        if (varOlanOgrenciNo != null)
+        {
+            ViewBag.Hata = "Bu öğrenci numarası zaten kullanılıyor. Lütfen farklı bir numara girin.";
+            return View(kayit);
+        }
+
         var ogrenci = new Ogrenci
         {
             AdSoyad = kayit.AdSoyad,
